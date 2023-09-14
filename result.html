@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurvedic Products Table</title>
+
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* Custom styles for the table */
+        .custom-table {
+            margin-top: 20px;
+        }
+
+        /* Style for the chart container */
+        .chart-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Ayurvedic Products</h1>
+
+        <!-- Doughnut chart container at the top -->
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <!-- Table container at the bottom -->
+        <div class="table-responsive custom-table">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>SNo</th>
+                        <th>Raw Material of Plant</th>
+                        <th>Brand Name</th>
+                        <th>Drugs Produced by Raw Materials</th>
+                        <th>Percentage of Raw Material Used</th>
+                        <th>Season</th>
+                        <th>Location of Raw Materials</th>
+                        <th>Wholesalers & Distributors Name</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- JavaScript will populate the table here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Add Bootstrap JS and Popper.js scripts (required for Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+m
+    <script>
+        // Sample data for Ayurvedic Products
+        const ayurvedicData = [
+            {
+                sno: 1,
+                rawMaterial: 'Turmeric (Alleppey Finger Turmeric)',
+                brandName: 'NURALZ',
+                drugsProduced: 'Turmeric Extract, Turmeric Capsules',
+                percentageUsed: '80%',
+                season: 'Monsoon',
+                location: 'India',
+                wholesalersAndDistributors: 'Health Products Distributors Inc., Spice Distributors LLC',
+            },
+            {
+                sno: 2,
+                rawMaterial: 'Turmeric (Salem Turmeric)',
+                brandName: 'DABUR India Ltd.',
+                drugsProduced: 'Amla Juice, Amla Hair Oil',
+                percentageUsed: '90%',
+                season: 'Summer',
+                location: 'India',
+                wholesalersAndDistributors: 'DABUR Distributors, Ayurveda Wellness Co.',
+            },
+            {
+                sno: 3,
+                rawMaterial: 'Turmeric (Erode Turmeric)',
+                brandName: 'Patanjali Ayurveda',
+                drugsProduced: 'Neem Soap, Neem Oil',
+                percentageUsed: '75%',
+                season: 'Winter',
+                location: 'India',
+                wholesalersAndDistributors: 'Patanjali Distributors, Ayurveda Health Products Inc.',
+            },
+            {
+                sno: 4,
+                rawMaterial: 'Turmeric (Alleppey Finger Turmeric)',
+                brandName: 'Himalaya Wellness',
+                drugsProduced: 'Ashwagandha Capsules, Ashwagandha Powder',
+                percentageUsed: '85%',
+                season: 'Autumn',
+                location: 'India',
+                wholesalersAndDistributors: 'Himalaya Distributors, Wellness Products Co.',
+            },
+            {
+                sno: 5,
+                rawMaterial: 'Turmeric (Salem Turmeric)',
+                brandName: 'Vicco Laboratories',
+                drugsProduced: 'Turmeric Cream, Sandalwood Soap',
+                percentageUsed: '70%',
+                season: 'Monsoon',
+                location: 'India',
+                wholesalersAndDistributors: 'Vicco Distributors, Ayurvedic Beauty Products Inc.',
+            },
+            {
+                sno: 6,
+                rawMaterial: 'Turmeric (Erode Turmeric)',
+                brandName: 'Zandu Ayurveda',
+                drugsProduced: 'Ayurvedic Syrups, Herbal Supplements',
+                percentageUsed: '95%',
+                season: 'Spring',
+                location: 'India',
+                wholesalersAndDistributors: 'Zandu Distributors, Ayurvedic Health Co.',
+            },
+            // Add more Ayurvedic product data as needed
+        ];
+
+        // Function to populate the table with Ayurvedic product data
+        function populateTable() {
+            const tableBody = document.getElementById('table-body');
+            let tableRows = '';
+
+            ayurvedicData.forEach((item) => {
+                tableRows += `
+                    <tr>
+                        <td>${item.sno}</td>
+                        <td>${item.rawMaterial}</td>
+                        <td>${item.brandName}</td>
+                        <td>${item.drugsProduced}</td>
+                        <td>${item.percentageUsed}</td>
+                        <td>${item.season}</td>
+                        <td>${item.location}</td>
+                        <td>${item.wholesalersAndDistributors}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = tableRows;
+        }
+
+        // Call the function to populate the table
+        populateTable();
+    </script>
+        <script>
+            // Function to calculate the percentage of raw material used for each brand
+           
+
+            function calculatePercentageUsed() {
+                const brands = {};
+                ayurvedicData.forEach((item) => {
+                    const brandName = item.brandName;
+                    const percentageUsed = parseFloat(item.percentageUsed);
+                    if (brands[brandName]) {
+                        brands[brandName] += percentageUsed;
+                    } else {
+                        brands[brandName] = percentageUsed;
+                    }
+                });
+                return Object.values(brands);
+            }
+        
+            // Function to create the pie chart
+            function createPieChart() {
+                const ctx = document.getElementById('pieChart').getContext('2d');
+                const percentages = calculatePercentageUsed();
+        
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(ayurvedicData.reduce((unique, item) => {
+                            unique[item.brandName] = true;
+                            return unique;
+                        }, {})),
+                        datasets: [{
+                            data: percentages,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)',
+                                'rgba(255, 159, 64, 0.7)',
+                            ],
+                        }],
+                    },
+                });
+            }
+        
+            // Call the function to create and render the pie chart
+            createPieChart();
+            document.getElementById("pieChart").style.width = ' 350px';
+            document.getElementById("pieChart").style.height = '350px';
+        </script>
+
+</body>
+</html>
